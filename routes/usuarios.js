@@ -6,7 +6,7 @@ export const router = Router();
 // Función pasada por referencia porque aún no se debe ejecutar la función, solo cuando se esté usando la ruta
 router.get('/', usuariosGet);
 
-router.put('/', usuariosPut);
+router.put('/:id', usuariosPut);
 
 router.post('/', usuariosPost);
 
