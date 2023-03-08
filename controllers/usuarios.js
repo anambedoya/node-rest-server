@@ -1,4 +1,5 @@
 import {response, request } from 'express';
+import { Usuario } from '../models/usuario.js';
 
 export const usuariosGet = (req = request, res = response) => {
     const {q, nombre = 'No name', apiKey, page = 1, limit } = req.query;
@@ -22,13 +23,15 @@ export const usuariosPut = (req, res) => {
     })
 }
 
-export const usuariosPost = (req, res) => {
-    const {nombre, edad} = req.body;
+export const usuariosPost = async (req, res) => {
+    const body = req.body;
+    const usuario = new Usuario(body);
+
+    await usuario.save();
 
     res.status(200).json({
         msg: 'post API - controlador',
-        nombre,
-        edad
+        usuario
     })
 }
 
