@@ -17,10 +17,10 @@ const UsuarioSchema = Schema({
     img: {
         type: String,
     },
-    rol: {
+    role: {
         type: String,
         required: true,
-        enum: ['ADMIN_ROLE', 'USER_ROLE']
+        // enum: ['ADMIN_ROLE', 'USER_ROLE'] // Se buscan en la BD
     },
     estado: {
         type: Boolean,
