@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { check } from 'express-validator';
-import { Role } from "../models/rol.js";
+
+import { emailExiste, esRoleValido } from "../helpers/db-validators.js";
+import { validarCampos } from '../middlewares/validar-campos.js';
 
 import { usuariosDelete, usuariosGet, usuariosPatch, usuariosPost, usuariosPut } from "../controllers/usuarios.js";
-import { validarCampos } from '../middlewares/validar-campos.js';
 
 export const router = Router();
 
@@ -16,13 +17,9 @@ router.post('/',[
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('password', 'El password debe ser de más de 6 letras').isLength({ min: 6 }),
     check('correo', 'El correo no es válido').isEmail(),
+    check('correo').custom(emailExiste),
     // check('role', 'No es un rol válido').isIn(['ADMIN_ROLE', 'USER_ROLE']),
-    check('role').custom(async (role = '') => {
-        const existeRol = await Role.findOne({ rol: role });
-        if(!existeRol) {
-            throw new Error(`El rol ${role} no está registrado en la BD`)
-        }
-    }),
+    check('role').custom(esRoleValido),
     validarCampos
 ] ,usuariosPost);
 
