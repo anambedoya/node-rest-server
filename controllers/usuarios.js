@@ -16,12 +16,22 @@ export const usuariosGet = (req = request, res = response) => {
     })
 }
 
-export const usuariosPut = (req, res) => {
+export const usuariosPut = async (req, res) => {
     const id = req.params.id;
+    const { _id, password, google, correo, ...resto } = req.body;
+
+    // TODO: Validar contra base de datos
+    if(password) {
+        // Encriptar la contraseña
+        const salt = genSaltSync(10);
+        resto.password = hashSync(password, salt);
+    }
+
+    const usuario = await Usuario.findByIdAndUpdate(id, resto, { new: true });
 
     res.status(200).json({
         msg: 'put API - controlador',
-        id
+        usuario
     })
 }
 

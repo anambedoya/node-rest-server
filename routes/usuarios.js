@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { check } from 'express-validator';
 
-import { emailExiste, esRoleValido } from "../helpers/db-validators.js";
+import { emailExiste, esRoleValido, existeUsuarioPorId } from "../helpers/db-validators.js";
 import { validarCampos } from '../middlewares/validar-campos.js';
 
 import { usuariosDelete, usuariosGet, usuariosPatch, usuariosPost, usuariosPut } from "../controllers/usuarios.js";
@@ -11,7 +11,12 @@ export const router = Router();
 // Función pasada por referencia porque aún no se debe ejecutar la función, solo cuando se esté usando la ruta
 router.get('/', usuariosGet);
 
-router.put('/:id', usuariosPut);
+router.put('/:id',[
+    check('id', 'No es un ID válido').isMongoId(),
+    check('id').custom(existeUsuarioPorId),
+    check('role').custom(esRoleValido),
+    validarCampos
+],usuariosPut);
 
 router.post('/',[
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
