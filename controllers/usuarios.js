@@ -3,17 +3,27 @@ import { Usuario } from '../models/usuario.js';
 import bcryptjs from 'bcryptjs';
 const { genSaltSync, hashSync } = bcryptjs;
 
-export const usuariosGet = (req = request, res = response) => {
-    const {q, nombre = 'No name', apiKey, page = 1, limit } = req.query;
+export const usuariosGet = async (req = request, res = response) => {
+    const { limite = 5, desde = 0 } = req.query;
+    const query = { estado: true };
+    // const usuarios = await Usuario.find(query)
+    //     .skip(Number(desde))
+    //     .limit(Number(limite));
+
+    // const total = await Usuario.countDocuments(query);
+
+    // Para evitar operación bloqueante
+    const [total, usuarios] = await Promise.all([
+        Usuario.countDocuments(query),
+        Usuario.find(query)
+        .skip(Number(desde))
+        .limit(Number(limite))
+    ]);
 
     res.status(200).json({
-        msg: 'get API - controlador',
-        q,
-        nombre,
-        apiKey,
-        page,
-        limit
-    })
+        total,
+        usuarios
+    });
 }
 
 export const usuariosPut = async (req, res) => {
