@@ -6,19 +6,19 @@ import { validarCampos } from '../middlewares/validar-campos.js';
 
 import { usuariosDelete, usuariosGet, usuariosPatch, usuariosPost, usuariosPut } from "../controllers/usuarios.js";
 
-export const router = Router();
+export const usuariosRouter = Router();
 
 // Función pasada por referencia porque aún no se debe ejecutar la función, solo cuando se esté usando la ruta
-router.get('/', usuariosGet);
+usuariosRouter.get('/', usuariosGet);
 
-router.put('/:id',[
+usuariosRouter.put('/:id',[
     check('id', 'No es un ID válido').isMongoId(),
     check('id').custom(existeUsuarioPorId),
     check('role').custom(esRoleValido),
     validarCampos
 ],usuariosPut);
 
-router.post('/',[
+usuariosRouter.post('/',[
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('password', 'El password debe ser de más de 6 letras').isLength({ min: 6 }),
     check('correo', 'El correo no es válido').isEmail(),
@@ -28,9 +28,9 @@ router.post('/',[
     validarCampos
 ] ,usuariosPost);
 
-router.patch('/', usuariosPatch)
+usuariosRouter.patch('/', usuariosPatch)
 
-router.delete('/:id', [
+usuariosRouter.delete('/:id', [
     check('id', 'No es un ID válido').isMongoId(),
     check('id').custom(existeUsuarioPorId),
     validarCampos
