@@ -71,15 +71,11 @@ export const usuariosPatch = (req, res) => {
 export const usuariosDelete = async (req, res) => {
     const { id } = req.params;
 
-    const uid = req.uid;
-
-    // Físicamente lo borramos
-    // const usuario = await Usuario.findByIdAndDelete(id);
-
     const usuario = await Usuario.findByIdAndUpdate(id, { estado: false }, { new: true });
+    const usuarioAutenticado = req.usuario;
 
     res.status(200).json({
         usuario,
-        uid
+        usuarioAutenticado
     })
 }
