@@ -32,7 +32,7 @@ usuariosRouter.patch('/', usuariosPatch)
 
 usuariosRouter.delete('/:id', [
     validarJWT,
-    // esAdminRole,
+    // esAdminRole, Reemplazado por el middleware de abajo
     tieneRole('ADMIN_ROLE', 'VENTAS_ROLE'),
     check('id', 'No es un ID válido').isMongoId(),
     check('id').custom(existeUsuarioPorId),
