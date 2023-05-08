@@ -1,6 +1,34 @@
 import { response } from "express";
 import { Categoria } from "../models/categoria.js";
 
+// Obtener categorias - paginado - total - populate
+export const obtenerCategorias = async (req, res = response) => {
+    const { limite = 5, desde = 0 } = req.query;
+    const query = { estado: true };
+    const [total, categorias] = await Promise.all([
+        Categoria.countDocuments(query),
+        Categoria.find(query)
+            .populate("usuario", "nombre")
+            .skip(Number(desde))
+            .limit(Number(limite))
+    ]);
+
+    res.status(200).json({
+        total,
+        categorias
+    })
+}
+
+// Obtener categoria - populate {}
+export const obtenerCategoria = async (req, res = response) => {
+    const { id } = req.params;
+    const categoria = await Categoria.findById(id).populate("usuario", "nombre");
+
+    res.status(200).json({
+        categoria
+    })
+}
+
 export const crearCategoria = async (req, res = response) => {
     const nombre = req.body.nombre.toUpperCase();
 
@@ -24,4 +52,43 @@ export const crearCategoria = async (req, res = response) => {
     await categoria.save();
 
     res.status(201).json(categoria);
+}
+
+// Actualizar categoria
+export const actualizarCategoria = async (req, res = response) => {
+    const { id } = req.params;
+    const { estado, usuario, ...data } = req.body;
+    
+    const categoriaById = await Categoria.findById(id);
+    
+    if(categoriaById.estado == false) {
+        res.status(400).json({
+            msg: 'La categoría está eliminada'
+        })
+    } else {
+        data.nombre = data.nombre.toUpperCase();
+        data.usuario = req.usuario._id;
+        const categoria = await Categoria.findByIdAndUpdate(id, data, { new: true });
+
+        res.status(200).json(categoria)
+    }
+}
+
+// Borrar categoria - estado: false
+export const borrarCategoria = async (req, res = response) => {
+    const id = req.params.id;
+
+    const categoriaById = await Categoria.findById(id);
+    if(categoriaById.estado == false) {
+        res.status(400).json({
+            msg: 'La categoría ya está eliminada'
+        })
+    } else {
+        const categoria = await Categoria.findByIdAndUpdate(id, { estado: false}, { new: true });
+    
+        res.status(200).json({
+            categoria
+        })
+    }
+
 }
