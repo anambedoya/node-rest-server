@@ -90,5 +90,4 @@ export const borrarCategoria = async (req, res = response) => {
             categoria
         })
     }
-
 }

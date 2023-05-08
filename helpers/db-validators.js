@@ -1,4 +1,5 @@
 import { Categoria } from "../models/categoria.js";
+import { Producto } from "../models/producto.js";
 import { Role } from "../models/rol.js";
 import { Usuario } from "../models/usuario.js";
 
@@ -34,6 +35,27 @@ export const existeCategoria = async (id = '') => {
 
     if(!categoria) {
        throw new Error(`El id no existe ${id}`);
+    }
+}
+
+/*
+* Existe producto por id
+*/
+
+export const existeProducto = async (id = '') => {
+    const producto = await Producto.findById(id);
+
+    if(!producto) {
+       throw new Error(`El id no existe ${id}`);
+    }
+}
+
+export const existeCategoriaProducto = async (categoria = '') => {
+    const categoriaCapitalizada = categoria.toUpperCase();
+    const categoriaDB = await Categoria.findOne({nombre: categoriaCapitalizada});
+
+    if(!categoriaDB) {
+        throw new Error(`La categoría ${categoria} no existe`);
     }
 }
 

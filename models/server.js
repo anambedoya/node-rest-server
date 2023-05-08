@@ -4,6 +4,7 @@ import { usuariosRouter } from '../routes/usuarios.js';
 import { loginRouter } from '../routes/auth.js';
 import { dbConnection } from '../database/config.js';
 import { categoriasRouter } from '../routes/categorias.js';
+import { productosRouter } from '../routes/productos.js';
 
 export class Server {
     constructor() {
@@ -13,7 +14,8 @@ export class Server {
         this.paths = {
             auth: '/api/auth',
             categorias: '/api/categorias',
-            usuarios: '/api/usuarios'
+            usuarios: '/api/usuarios',
+            productos: '/api/productos'
         }
         
         // Conectar a base de datos
@@ -45,6 +47,7 @@ export class Server {
         this.app.use(this.paths.auth, loginRouter);
         this.app.use(this.paths.categorias, categoriasRouter);
         this.app.use(this.paths.usuarios, usuariosRouter);
+        this.app.use(this.paths.productos, productosRouter)
     }
 
     listen() {
