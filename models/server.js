@@ -5,6 +5,7 @@ import { loginRouter } from '../routes/auth.js';
 import { dbConnection } from '../database/config.js';
 import { categoriasRouter } from '../routes/categorias.js';
 import { productosRouter } from '../routes/productos.js';
+import { buscarRouter } from '../routes/buscar.js';
 
 export class Server {
     constructor() {
@@ -13,9 +14,10 @@ export class Server {
 
         this.paths = {
             auth: '/api/auth',
+            buscar: '/api/buscar',
             categorias: '/api/categorias',
+            productos: '/api/productos',
             usuarios: '/api/usuarios',
-            productos: '/api/productos'
         }
         
         // Conectar a base de datos
@@ -45,9 +47,10 @@ export class Server {
 
     routes() {
         this.app.use(this.paths.auth, loginRouter);
+        this.app.use(this.paths.buscar, buscarRouter);
         this.app.use(this.paths.categorias, categoriasRouter);
+        this.app.use(this.paths.productos, productosRouter);
         this.app.use(this.paths.usuarios, usuariosRouter);
-        this.app.use(this.paths.productos, productosRouter)
     }
 
     listen() {
