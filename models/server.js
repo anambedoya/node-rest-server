@@ -1,11 +1,13 @@
 import express from 'express';
 import cors from 'cors';
+import fileUpload from 'express-fileupload';
 import { usuariosRouter } from '../routes/usuarios.js';
 import { loginRouter } from '../routes/auth.js';
 import { dbConnection } from '../database/config.js';
 import { categoriasRouter } from '../routes/categorias.js';
 import { productosRouter } from '../routes/productos.js';
 import { buscarRouter } from '../routes/buscar.js';
+import { uploadsRouter } from '../routes/uploads.js';
 
 export class Server {
     constructor() {
@@ -17,6 +19,7 @@ export class Server {
             buscar: '/api/buscar',
             categorias: '/api/categorias',
             productos: '/api/productos',
+            uploads: '/api/uploads',
             usuarios: '/api/usuarios',
         }
         
@@ -43,6 +46,13 @@ export class Server {
 
         // Directorio público
         this.app.use(express.static('public'));
+
+        // Fileupload - Carga de archivos
+        // Note that this option available for versions 1.0.0 and newer. 
+        this.app.use(fileUpload({
+            useTempFiles : true,
+            tempFileDir : '/tmp/'
+        }));
     }
 
     routes() {
@@ -50,6 +60,7 @@ export class Server {
         this.app.use(this.paths.buscar, buscarRouter);
         this.app.use(this.paths.categorias, categoriasRouter);
         this.app.use(this.paths.productos, productosRouter);
+        this.app.use(this.paths.uploads, uploadsRouter);
         this.app.use(this.paths.usuarios, usuariosRouter);
     }
 
