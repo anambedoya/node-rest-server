@@ -1,23 +1,17 @@
 import { response } from "express";
-import path from "path";
-import { fileURLToPath } from 'url';
+import { subirArchivo } from "../helpers/subir-archivo.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-export const cargarArchivo = (req, res = response) => {
+export const cargarArchivo = async (req, res = response) => {
   if (!req.files || Object.keys(req.files).length === 0 || !req.files.archivo) {
     res.status(400).json({msg: 'No hay archivos que subir'});
     return;
   }
 
-  const { archivo } = req.files;
-  const uploadPath = path.join(__dirname, '../uploads/', archivo.name);
-
-  archivo.mv(uploadPath, (err) => {
-    if (err) {
-      return res.status(500).json({err});
-    }
-
-    res.json({msg: 'File uploaded to ' + uploadPath});
-  });
+  try {
+    // Txt, md
+    const nombre = await subirArchivo(req.files, ['txt', 'md'], 'textos');
+    res.json({ nombre })
+  } catch (msg) {
+    res.status(400).json({msg})
+  }
 }
